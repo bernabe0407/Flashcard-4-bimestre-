@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards: Eletromagnetismo</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* O player agora fica escondido para focar 100% nos flashcards */
+    .music-player {
+      width: 100%;
+      box-sizing: border-box;
+      background-color: var(--card-bg, #1e1e1e);
+      border: 1px solid var(--border-color, #2d2d2d);
+      padding: 14px 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .music-info {
+      font-size: 0.85rem;
+      color: var(--text-muted, #9ca3af);
+    }
+
+    .music-input-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .music-input-group input {
+      flex: 1;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .music-input-group input:focus {
+      border-color: #e53935;
+    }
+
+    /* Mantém o iframe invisível para não quebrar a tela */
+    #music-player-frame {
+      display: none;
+    }
+
+    .music-button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      background: #e53935;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .music-button:hover {
+      opacity: 0.9;
+    }
+
+    /* ESTILIZAÇÃO COMPLEMENTAR PARA AS IMAGENS DO TEMA */
+    .card-image-container {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .card-image {
+      max-width: 100%;
+      height: 110px;
+      object-fit: contain;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 4px;
+    }
+   
+    .card-front {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <h1>⚡ Eletromagnetismo</h1>
+      <p>Estude os conceitos fundamentais da Física.</p>
+    </header>
+
+    <!-- CONTROLADOR DE ÁUDIO DE FUNDO -->
+    <div class="music-player">
+      <span class="music-info">
+        🎧 Cole o link do YouTube e clique em "Tocar" para ativar a música de fundo:
+      </span>
+
+      <div class="music-input-group">
+        <input
+          type="text"
+          id="youtube-url-input"
+          placeholder="Ex: https://youtube.com..."
+        >
+        <button
+          type="button"
+          class="music-button"
+          onclick="mudarMusica()">
+          Tocar
+        </button>
+      </div>
+
+      <!-- O player roda invisível aqui -->
+      <iframe
+        id="music-player-frame"
+        src=""
+        title="Player de áudio"
+        allow="autoplay; encrypted-media">
+      </iframe>
+    </div>
+
+    <!-- PROGRESSO DOS FLASHCARDS -->
+    <div class="progress-container">
+      <span id="current-card-num">1</span>
+
+      <div class="progress-bar-bg">
+        <div
+          class="progress-bar-fill"
+          id="progress-bar">
+        </div>
+      </div>
+
+      <span id="total-cards-num">6</span>
+    </div>
+
+    <!-- FLASHCARD PRINCIPAL -->
+    <div class="flashcard-wrapper" onclick="flipCard()">
+      <div class="flashcard" id="flashcard">
+
+        <div class="card-face card-front">
+          <div class="card-image-container">
+            <img id="card-img" src="" alt="Ilustração do tema" class="card-image">
+          </div>
+          <h3 id="question-text">Carregando pergunta...</h3>
+          <span class="hint">🔄 Clique para ver a resposta</span>
+        </div>
+
+        <div class="card-face card-back">
+          <h4>Resposta Explicada</h4>
+          <p id="answer-text">Carregando resposta...</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- BOTÕES DE AÇÃO -->
+    <div class="controls">
+      <button onclick="shuffleCards()" title="Embaralhar cards">🔀 Embaralhar</button>
+      <div class="nav-group">
+        <button onclick="prevCard()">⬅️ Anterior</button>
+        <button class="primary" onclick="nextCard()">Próximo ➡️</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const flashcardsData = [
+      {
+        q: "O que estabelece a Lei da Indução de Eletromagnetismo de Faraday?",
+        a: "Qualquer variação no fluxo magnético através de um circuito induz uma força eletromotriz (fem). Se o circuito estiver fechado, poderá surgir uma corrente elétrica induzida.",
+        img: "faraday.png"
+      },
+      {
+        q: "Qual é o princípio fundamental por trás da Lei de Lenz?",
+        a: "A corrente induzida tem um sentido cujo campo magnético se opõe à variação do fluxo magnético que a originou. Isso está relacionado à conservação de energia.",
+        img: "lenz.png"
+      },
+      {
+        q: "O que o Experimento de Oersted (1820) comprovou?",
+        a: "Comprovou que uma corrente elétrica em um condutor gera um campo magnético ao seu redor.",
+        img: "oersted.png"
+      },
+      {
+        q: "O que descreve a Força Magnética (Força de Lorentz)?",
+        a: "Uma carga elétrica em movimento num campo magnético pode sofrer uma força perpendicular à velocidade e ao campo. Seu módulo é F = |q| · v · B · sen(θ).",
+        img: "lorentz.png"
+      },
+      {
+        q: "O que são Ondas Eletromagnéticas?",
+        a: "São ondas formadas por campos elétricos e magnéticos oscilantes, perpendiculares entre si, que se propagam no vácuo à velocidade da luz.",
+        img: "ondas.png"
+      },
+      {
+        q: "Qual a diferença entre Transformadores Elevadores e Abaixadores?",
+        a: "Os elevadores aumentam a tensão e diminuem a corrente. Os abaixadores reduzem a tensão e aumentam a corrente, considerando transformadores ideais.",
+        img: "transformador.png"
+      }
+    ];
+
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    const flashcardEl = document.getElementById("flashcard");
+    const questionTextEl = document.getElementById("question-text");
+    const answerTextEl = document.getElementById("answer-text");
+    const cardImgEl = document.getElementById("card-img");
+    const currentCardNumEl = document.getElementById("current-card-num");
+    const totalCardsNumEl = document.getElementById("total-cards-num");
+    const progressBarEl = document.getElementById("progress-bar");
+
+    totalCardsNumEl.textContent = flashcardsData.length;
+
+    updateCard();
+
+    // CORREÇÃO DA EXTRAÇÃO DO ID DO YOUTUBE
+    function mudarMusica() {
+      const input = document.getElementById('youtube-url-input').value.trim();
+      const iframe = document.getElementById('music-player-frame');
+     
+      let videoId = '';
+     
+      if (input) {
+        // Expressão regular corrigida para extrair estritamente o código de 11 dígitos
+        const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+
+        if (match && match[1]) {
+          videoId = match[1]; // Linha corrigida
+        } else if (input.length === 11) {
+          videoId = input;
+        } else {
+          alert('Link inválido. Insira uma URL padrão do YouTube.');
+          return;
+        }
+      } else {
+        alert('Por favor, cole um link antes de clicar em Tocar.');
+        return;
+      }
+
+      // Alimenta o iframe com o autoplay ativado por parâmetro
+      iframe.src = `https://youtube.com{videoId}?autoplay=1&playsinline=1&controls=0&loop=1&playlist=${videoId}`;
+    }
+
+    function updateCard() {
+      isFlipped = false;
+      flashcardEl.classList.remove("flipped");
+
+      questionTextEl.textContent = flashcardsData[currentIndex].q;
+      answerTextEl.textContent = flashcardsData[currentIndex].a;
+     
+      cardImgEl.src = flashcardsData[currentIndex].img;
+      cardImgEl.alt = "Ilustração para: " + flashcardsData[currentIndex].q;
+
+      currentCardNumEl.textContent = currentIndex + 1;
+
+      const progress = ((currentIndex + 1) / flashcardsData.length) * 100;
+      progressBarEl.style.width = progress + "%";
+    }
+
+    function flipCard() {
+      isFlipped = !isFlipped;
+      flashcardEl.classList.toggle("flipped", isFlipped);
+    }
+
+    function nextCard() {
+      if (currentIndex < flashcardsData.length - 1) {
+        currentIndex++;
+        updateCard();
+      }
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateCard();
+      }
+    }
+
+    function shuffleCards() {
+      flashcardsData.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
+      updateCard();
+    }
+  </script>
+</body>
+</html>
