@@ -1,0 +1,226 @@
+:root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --accent-color: #ff6900;
+    --accent-hover: #e05b00;
+    --text-main: #f3f4f6;
+    --text-muted: #9ca3af;
+    --border-color: #2d2d2d;
+  }
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  header {
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 1.7rem;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+  }
+  
+  header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+  
+  /* Player de Música Estilizado e Visível */
+  .music-player {
+    width: 100%;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .music-player audio {
+    width: 100%;
+    height: 40px;
+    display: block;
+  }
+  
+  .music-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .progress-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  .progress-bar-bg {
+    flex-grow: 1;
+    height: 6px;
+    background-color: var(--border-color);
+    border-radius: 3px;
+    margin: 0 16px;
+    overflow: hidden;
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    background-color: var(--accent-color);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  
+  /* Flashcard Estilo 3D */
+  .flashcard-wrapper {
+    width: 100%;
+    height: 320px;
+    perspective: 1000px;
+    cursor: pointer;
+  }
+  
+  .flashcard {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  }
+  
+  .flashcard.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    text-align: center;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+  }
+  
+  .card-front h3 {
+    font-size: 1.25rem;
+    color: var(--text-main);
+    margin-bottom: 12px;
+  }
+  
+  .card-front .hint {
+    font-size: 0.85rem;
+    color: var(--accent-color);
+    background: rgba(255, 105, 0, 0.1);
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-top: 16px;
+  }
+  
+  .card-back {
+    transform: rotateY(180deg);
+    background-color: #271408;
+    border-color: #432005;
+  }
+  
+  .card-back h4 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--accent-color);
+    margin-bottom: 12px;
+  }
+  
+  .card-back p {
+    font-size: 1.05rem;
+    line-height: 1.5;
+    color: var(--text-main);
+  }
+  
+  /* Controles de Navegação */
+  .controls {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  button {
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  button:hover {
+    background-color: var(--border-color);
+    border-color: var(--accent-color);
+  }
+  
+  button.primary {
+    background-color: var(--accent-color);
+    color: #fff;
+    border: none;
+  }
+  
+  button.primary:hover {
+    background-color: var(--accent-hover);
+  }
+  
+  .nav-group {
+    display: flex;
+    gap: 12px;
+    flex-grow: 1;
+  }
+  
+  .nav-group button {
+    flex: 1;
+    justify-content: center;
+  }
