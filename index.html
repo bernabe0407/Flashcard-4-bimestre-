@@ -19,7 +19,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 4px;
     }
 
     .music-info {
@@ -44,7 +44,7 @@
     }
 
     .music-input-group input:focus {
-      border-color: #e53935;
+      border-color: var(--accent-color, #ff6900);
     }
 
     /* Mantém o iframe invisível para não quebrar a tela */
@@ -68,30 +68,57 @@
       opacity: 0.9;
     }
 
-    /* ESTILIZAÇÃO COMPLEMENTAR PARA AS IMAGENS DO TEMA */
-    .card-image-container {
+    /* Banner inicial do tema no topo */
+    .topic-banner {
       width: 100%;
-      display: flex;
-      justify-content: center;
-      margin-bottom: 12px;
-    }
-
-    .card-image {
-      max-width: 100%;
-      height: 110px;
-      object-fit: contain;
-      border-radius: 8px;
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 4px;
-    }
-   
-    .card-front {
+      background-color: var(--card-bg, #1e1e1e);
+      border: 1px solid var(--border-color, #2d2d2d);
+      border-radius: 12px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
+      align-items: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+    }
+
+    .topic-banner img {
+      width: 100%;
+      max-height: 170px;
+      object-fit: contain;
+      background-color: #ffffff;
+      padding: 8px;
+      display: block;
+    }
+
+    .topic-banner-footer {
+      width: 100%;
+      display: flex;
       justify-content: space-between;
       align-items: center;
-      box-sizing: border-box;
-      padding: 20px;
+      gap: 8px;
+      padding: 8px 12px;
+      border-top: 1px solid var(--border-color, #2d2d2d);
+    }
+
+    .topic-banner-footer span {
+      font-size: 0.8rem;
+      color: var(--text-muted, #9ca3af);
+      text-align: left;
+    }
+
+    .banner-upload-btn {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background: #2a2a2a;
+      color: #f3f4f6;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .banner-upload-btn:hover {
+      border-color: var(--accent-color, #ff6900);
     }
   </style>
 </head>
@@ -103,6 +130,27 @@
       <h1>⚡ Eletromagnetismo</h1>
       <p>Estude os conceitos fundamentais da Física.</p>
     </header>
+
+    <!-- IMAGEM DO TEMA NO INÍCIO -->
+    <div class="topic-banner" id="topic-banner">
+      <img
+        id="topic-banner-img"
+        src="eletromagnetismo-capa.jpg"
+        alt="Ondas eletromagnéticas: campo elétrico, campo magnético e propagação"
+        onerror="this.style.display='none'"
+      >
+      <div class="topic-banner-footer">
+        <span>Campos elétrico e magnético perpendiculares na propagação de uma onda eletromagnética</span>
+        <label class="banner-upload-btn" for="banner-upload-input">🖼️ Trocar capa</label>
+        <input
+          type="file"
+          id="banner-upload-input"
+          accept="image/*"
+          style="display: none;"
+          onchange="handleBannerUpload(event)"
+        >
+      </div>
+    </div>
 
     <!-- CONTROLADOR DE ÁUDIO DE FUNDO -->
     <div class="music-player">
@@ -147,14 +195,11 @@
       <span id="total-cards-num">6</span>
     </div>
 
-    <!-- FLASHCARD PRINCIPAL -->
+    <!-- FLASHCARD PRINCIPAL (SEM IMAGEM INTERNA) -->
     <div class="flashcard-wrapper" onclick="flipCard()">
       <div class="flashcard" id="flashcard">
 
         <div class="card-face card-front">
-          <div class="card-image-container">
-            <img id="card-img" src="" alt="Ilustração do tema" class="card-image">
-          </div>
           <h3 id="question-text">Carregando pergunta...</h3>
           <span class="hint">🔄 Clique para ver a resposta</span>
         </div>
@@ -182,33 +227,27 @@
     const flashcardsData = [
       {
         q: "O que estabelece a Lei da Indução de Eletromagnetismo de Faraday?",
-        a: "Qualquer variação no fluxo magnético através de um circuito induz uma força eletromotriz (fem). Se o circuito estiver fechado, poderá surgir uma corrente elétrica induzida.",
-        img: "faraday.png"
+        a: "Qualquer variação no fluxo magnético através de um circuito induz uma força eletromotriz (fem). Se o circuito estiver fechado, poderá surgir uma corrente elétrica induzida."
       },
       {
         q: "Qual é o princípio fundamental por trás da Lei de Lenz?",
-        a: "A corrente induzida tem um sentido cujo campo magnético se opõe à variação do fluxo magnético que a originou. Isso está relacionado à conservação de energia.",
-        img: "lenz.png"
+        a: "A corrente induzida tem um sentido cujo campo magnético se opõe à variação do fluxo magnético que a originou. Isso está relacionado à conservação de energia."
       },
       {
         q: "O que o Experimento de Oersted (1820) comprovou?",
-        a: "Comprovou que uma corrente elétrica em um condutor gera um campo magnético ao seu redor.",
-        img: "oersted.png"
+        a: "Comprovou que uma corrente elétrica em um condutor gera um campo magnético ao seu redor."
       },
       {
         q: "O que descreve a Força Magnética (Força de Lorentz)?",
-        a: "Uma carga elétrica em movimento num campo magnético pode sofrer uma força perpendicular à velocidade e ao campo. Seu módulo é F = |q| · v · B · sen(θ).",
-        img: "lorentz.png"
+        a: "Uma carga elétrica em movimento num campo magnético pode sofrer uma força perpendicular à velocidade e ao campo. Seu módulo é F = |q| · v · B · sen(θ)."
       },
       {
         q: "O que são Ondas Eletromagnéticas?",
-        a: "São ondas formadas por campos elétricos e magnéticos oscilantes, perpendiculares entre si, que se propagam no vácuo à velocidade da luz.",
-        img: "ondas.png"
+        a: "São ondas formadas por campos elétricos e magnéticos oscilantes, perpendiculares entre si, que se propagam no vácuo à velocidade da luz."
       },
       {
         q: "Qual a diferença entre Transformadores Elevadores e Abaixadores?",
-        a: "Os elevadores aumentam a tensão e diminuem a corrente. Os abaixadores reduzem a tensão e aumentam a corrente, considerando transformadores ideais.",
-        img: "transformador.png"
+        a: "Os elevadores aumentam a tensão e diminuem a corrente. Os abaixadores reduzem a tensão e aumentam a corrente, considerando transformadores ideais."
       }
     ];
 
@@ -218,28 +257,39 @@
     const flashcardEl = document.getElementById("flashcard");
     const questionTextEl = document.getElementById("question-text");
     const answerTextEl = document.getElementById("answer-text");
-    const cardImgEl = document.getElementById("card-img");
     const currentCardNumEl = document.getElementById("current-card-num");
     const totalCardsNumEl = document.getElementById("total-cards-num");
     const progressBarEl = document.getElementById("progress-bar");
+    const topicBannerImgEl = document.getElementById("topic-banner-img");
 
     totalCardsNumEl.textContent = flashcardsData.length;
 
     updateCard();
 
-    // CORREÇÃO DA EXTRAÇÃO DO ID DO YOUTUBE
+    function handleBannerUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        topicBannerImgEl.src = e.target.result;
+        topicBannerImgEl.style.display = "block";
+      };
+      reader.readAsDataURL(file);
+      event.target.value = "";
+    }
+
     function mudarMusica() {
       const input = document.getElementById('youtube-url-input').value.trim();
       const iframe = document.getElementById('music-player-frame');
-     
+
       let videoId = '';
-     
+
       if (input) {
-        // Expressão regular corrigida para extrair estritamente o código de 11 dígitos
         const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
 
         if (match && match[1]) {
-          videoId = match[1]; // Linha corrigida
+          videoId = match[1];
         } else if (input.length === 11) {
           videoId = input;
         } else {
@@ -251,8 +301,7 @@
         return;
       }
 
-      // Alimenta o iframe com o autoplay ativado por parâmetro
-      iframe.src = `https://youtube.com{videoId}?autoplay=1&playsinline=1&controls=0&loop=1&playlist=${videoId}`;
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&playsinline=1&controls=0&loop=1&playlist=${videoId}`;
     }
 
     function updateCard() {
@@ -261,9 +310,6 @@
 
       questionTextEl.textContent = flashcardsData[currentIndex].q;
       answerTextEl.textContent = flashcardsData[currentIndex].a;
-     
-      cardImgEl.src = flashcardsData[currentIndex].img;
-      cardImgEl.alt = "Ilustração para: " + flashcardsData[currentIndex].q;
 
       currentCardNumEl.textContent = currentIndex + 1;
 
